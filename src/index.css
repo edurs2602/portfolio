@@ -1,17 +1,61 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700;800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-.glow {
+@layer base {
+  body {
+    @apply bg-bg text-body transition-colors duration-300;
+  }
+
+  body.light {
+    @apply bg-bg-light text-body-light;
+  }
+}
+
+@layer components {
+  .section-container {
+    @apply max-w-6xl mx-auto px-6 lg:px-16 py-20 lg:py-32;
+  }
+
+  .section-title {
+    @apply font-heading text-5xl lg:text-7xl font-bold text-heading mb-8;
+  }
+
+  .light .section-title {
+    @apply text-heading-light;
+  }
+
+  .accent-dot {
+    @apply text-accent;
+  }
+
+  .glow {
     transition: all 0.25s ease-in-out;
-}
+  }
 
-.glow:hover {
-    box-shadow: 0 0 25px rgb(129, 175, 207);
-}
+  .glow:hover {
+    box-shadow: 0 0 25px rgba(245, 166, 35, 0.4);
+  }
 
-.glow:img {
-    box-shadow: 0 0 25px rgb(129, 175, 207);
+  .card {
+    @apply bg-surface rounded-xl p-6 border border-muted/20 hover:border-accent/40 transition-all duration-300;
+  }
+
+  .light .card {
+    @apply bg-surface-light border-muted/10;
+  }
+
+  .chip {
+    @apply px-3 py-1 text-xs font-medium rounded-full bg-accent/10 text-accent border border-accent/20;
+  }
+
+  .btn-primary {
+    @apply px-6 py-3 bg-accent text-bg font-semibold rounded-lg hover:bg-accent-secondary transition-colors duration-200;
+  }
+
+  .btn-outline {
+    @apply px-6 py-3 border border-accent text-accent font-semibold rounded-lg hover:bg-accent/10 transition-colors duration-200;
+  }
 }
-/* 
-*{border: 1px red solid !important;} */

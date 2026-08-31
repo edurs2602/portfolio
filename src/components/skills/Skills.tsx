@@ -1,33 +1,54 @@
-const Skills = () => {
-    return (
-        <div className="h-10vh lg:flex justify-between z-50 text-white lg:py-5 lg:px-20 px-5 py-10 gap-10 flex-1">
-            <div className="h-full lg:py-40 flex flex-col lg:justify-center items-start text-black dark:text-white">
-                <h1 data-aos="fade-right" className="text-7xl font-semibold leading-11 mb-4">Skills<span className="text-primary">.</span></h1>  
-            </div>
-            <div data-aos="fade-left" className="h-full lg:py-40 flex flex-col lg:justify-center items-start text-black dark:text-white">
-                <h1 className="text-5xl font-semibold leading-11">Front<span className="text-primary">end</span></h1>  
-                <div className="h-full lg:py-10 flex flex-col justify-center lg:items-start items-start text-gray-700">
-                    <h1 className="text-3xl font-light leading-11">Javascript</h1>
-                    <h1 className="text-3xl font-light leading-11">Typescript</h1>
-                    <h1 className="text-3xl font-light leading-11">React</h1>
-                    <h1 className="text-3xl font-light leading-11">CSS3</h1>
-                    <h1 className="text-3xl font-light leading-11">Bootstrap</h1>
-                    <h1 className="text-3xl font-light leading-11 mb-10">Tailwind</h1>
-                </div>
-            </div>
-            <div data-aos="fade-left" className="h-full lg:py-40 flex flex-col lg:justify-center items-start text-black dark:text-white">
-                <h1 className="text-5xl font-semibold leading-11 mb-4">Back<span className="text-primary">end</span></h1>  
-                <div className="h-full lg:py-10 flex flex-col justify-center lg:items-start items-start text-gray-700">
-                    <h1 className="text-3xl font-light leading-11">Django</h1>
-                    <h1 className="text-3xl font-light leading-11">Flask</h1>
-                    <h1 className="text-3xl font-light leading-11">Spring</h1>
-                    <h1 className="text-3xl font-light leading-11">Postgresql</h1>
-                    <h1 className="text-3xl font-light leading-11">Mysql</h1>
-                    <h1 className="text-3xl font-light leading-11 mb-10">Docker</h1>
-                </div>
-            </div>
-        </div>
-    );
-};
+import { useTranslation } from 'react-i18next'
+import { motion } from 'framer-motion'
 
-export default Skills;
+const skillCategories = [
+  { key: 'backend', items: ['Python', 'Django', 'DRF', 'Flask', 'FastAPI'] },
+  { key: 'frontend', items: ['React', 'Vue', 'TypeScript', 'Tailwind CSS'] },
+  { key: 'databases', items: ['PostgreSQL', 'MySQL'] },
+  { key: 'devops', items: ['Docker', 'Kubernetes', 'Git', 'GitHub Actions', 'Azure DevOps', 'Azure Repos'] },
+  { key: 'cloud', items: ['AWS', 'Azure', 'DigitalOcean', 'Vercel'] },
+  { key: 'testing', items: ['Pytest', 'Unittest'] },
+]
+
+const Skills = () => {
+  const { t } = useTranslation()
+
+  return (
+    <div className="section-container">
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5 }}
+      >
+        <h2 className="section-title">
+          {t('skills.title')}<span className="accent-dot">.</span>
+        </h2>
+      </motion.div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-4xl">
+        {skillCategories.map((cat, i) => (
+          <motion.div
+            key={cat.key}
+            className="card"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.4, delay: i * 0.08 }}
+          >
+            <h3 className="font-heading font-semibold text-lg text-accent mb-4">
+              {t(`skills.${cat.key}`)}
+            </h3>
+            <div className="flex flex-wrap gap-2">
+              {cat.items.map((skill) => (
+                <span key={skill} className="chip">{skill}</span>
+              ))}
+            </div>
+          </motion.div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+export default Skills

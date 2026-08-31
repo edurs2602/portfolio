@@ -1,74 +1,135 @@
-import { Button } from "@material-tailwind/react";
+import { useTranslation } from 'react-i18next'
+import { motion } from 'framer-motion'
+import { useState } from 'react'
+import { api } from '../../services/api'
 
 const Contact = () => {
-    return (
-        <div className="h-10vh lg:flex justify-between z-50 text-white lg:py-5 lg:px-20 px-5 py-10 flex-1 gap-16">
-            <div className="h-full lg:py-20 flex flex-col lg:justify-center items-start text-black dark:text-white">
-                <h1 data-aos="fade-right" className="text-7xl font-semibold leading-11 mb-4">Contato<span className="text-primary">.</span></h1>  
-            </div>
-            <div className="h-full lg:py-15 flex flex-col justify-between lg:items-start items-center text-black">
-                <section className="bg-white dark:bg-gray-900">
-                    <div className="py-8 lg:py-16 px-4 mx-auto max-w-screen-md">
-                        <p className="mb-8 lg:mb-16 font-light text-start text-black dark:text-gray-400 sm:text-xl">
-                            Precisa de um desenvolvedor de software para seu projeto? Entre em contato pelo formulário abaixo ou envie um e-mail para edurs.2602@gmail.com.
-                        </p>
-                        <form action="#" className="space-y-8">
-                            <div>
-                                <label 
-                                    htmlFor="email" 
-                                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-                                >
-                                    Seu email
-                                </label>
-                                <input 
-                                    type="email" 
-                                    id="email" 
-                                    className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[#3991d0] focus:border-[#3991d0] hover:border-[#3991d0] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#3991d0] dark:focus:border-[#3991d0] dark:hover:border-[#3991d0] dark:shadow-sm-light" 
-                                    placeholder="email@email.com" 
-                                    required 
-                                />
-                            </div>
-                            <div>
-                                <label 
-                                    htmlFor="subject" 
-                                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-                                >
-                                    Titulo
-                                </label>
-                                <input 
-                                    type="text" 
-                                    id="subject" 
-                                    className="block p-3 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 shadow-sm focus:ring-[#3991d0] focus:border-[#3991d0] hover:border-[#3991d0] dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#3991d0] dark:focus:border-[#3991d0] dark:hover:border-[#3991d0] dark:shadow-sm-light" 
-                                    placeholder="Titulo da mensagem" 
-                                    required 
-                                />
-                            </div>
-                            <div className="sm:col-span-2">
-                                <label 
-                                    htmlFor="message" 
-                                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400"
-                                >
-                                    Sua Mensagem
-                                </label>
-                                <textarea 
-                                    id="message" 
-                                    rows={6} 
-                                    className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg shadow-sm border border-gray-300 focus:ring-[#3991d0] focus:border-[#3991d0] hover:border-[#3991d0] dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#3991d0] dark:focus:border-[#3991d0] dark:hover:border-[#3991d0]" 
-                                    placeholder="Deixe uma mensagem..."
-                                ></textarea>
-                            </div>
-                            <Button 
-                                fullWidth
-                                type="submit"
-                                className="" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}                            >
-                                Enviar
-                            </Button>
-                        </form>
-                    </div>
-                </section>
-            </div>
-        </div>
-    );
-};
+  const { t } = useTranslation()
+  const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' })
+  const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle')
 
-export default Contact;
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setForm({ ...form, [e.target.name]: e.target.value })
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setStatus('sending')
+    try {
+      await api.sendContact(form)
+      setStatus('success')
+      setForm({ name: '', email: '', subject: '', message: '' })
+    } catch {
+      setStatus('error')
+    }
+  }
+
+  return (
+    <div className="section-container">
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5 }}
+      >
+        <h2 className="section-title">
+          {t('contact.title')}<span className="accent-dot">.</span>
+        </h2>
+        <p className="text-body light:text-body-light text-lg max-w-xl mb-10">
+          {t('contact.description')}
+        </p>
+      </motion.div>
+
+      <motion.form
+        onSubmit={handleSubmit}
+        className="max-w-xl space-y-6"
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.4, delay: 0.2 }}
+      >
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <div>
+            <label htmlFor="name" className="block text-sm font-medium text-heading light:text-heading-light mb-2">
+              {t('contact.name')}
+            </label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              value={form.name}
+              onChange={handleChange}
+              placeholder={t('contact.name_placeholder')}
+              required
+              className="w-full px-4 py-3 bg-surface light:bg-surface-light border border-muted/20 rounded-lg text-heading light:text-heading-light placeholder-muted focus:border-accent focus:outline-none transition-colors"
+            />
+          </div>
+          <div>
+            <label htmlFor="email" className="block text-sm font-medium text-heading light:text-heading-light mb-2">
+              {t('contact.email')}
+            </label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              value={form.email}
+              onChange={handleChange}
+              placeholder={t('contact.email_placeholder')}
+              required
+              className="w-full px-4 py-3 bg-surface light:bg-surface-light border border-muted/20 rounded-lg text-heading light:text-heading-light placeholder-muted focus:border-accent focus:outline-none transition-colors"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label htmlFor="subject" className="block text-sm font-medium text-heading light:text-heading-light mb-2">
+            {t('contact.subject')}
+          </label>
+          <input
+            type="text"
+            id="subject"
+            name="subject"
+            value={form.subject}
+            onChange={handleChange}
+            placeholder={t('contact.subject_placeholder')}
+            required
+            className="w-full px-4 py-3 bg-surface light:bg-surface-light border border-muted/20 rounded-lg text-heading light:text-heading-light placeholder-muted focus:border-accent focus:outline-none transition-colors"
+          />
+        </div>
+
+        <div>
+          <label htmlFor="message" className="block text-sm font-medium text-heading light:text-heading-light mb-2">
+            {t('contact.message')}
+          </label>
+          <textarea
+            id="message"
+            name="message"
+            rows={6}
+            value={form.message}
+            onChange={handleChange}
+            placeholder={t('contact.message_placeholder')}
+            required
+            className="w-full px-4 py-3 bg-surface light:bg-surface-light border border-muted/20 rounded-lg text-heading light:text-heading-light placeholder-muted focus:border-accent focus:outline-none transition-colors resize-none"
+          />
+        </div>
+
+        <button
+          type="submit"
+          disabled={status === 'sending'}
+          className="btn-primary w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {status === 'sending' ? t('contact.sending') : t('contact.send')}
+        </button>
+
+        {status === 'success' && (
+          <p className="text-green-400 text-sm">{t('contact.success')}</p>
+        )}
+        {status === 'error' && (
+          <p className="text-red-400 text-sm">{t('contact.error')}</p>
+        )}
+      </motion.form>
+    </div>
+  )
+}
+
+export default Contact

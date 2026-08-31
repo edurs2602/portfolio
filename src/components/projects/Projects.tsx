@@ -1,183 +1,112 @@
-import chasquiImg from "../../assets/chasqui.jpeg" 
-import todoListImg from "../../assets/todolist.jpeg"
-import bookImg from "../../assets/book.jpeg"
-
-import { Button, Carousel, Typography } from "@material-tailwind/react";
+import { useTranslation } from 'react-i18next'
+import { motion } from 'framer-motion'
+import { useEffect, useState } from 'react'
+import { api, type Project } from '../../services/api'
+import { FiExternalLink, FiGithub } from 'react-icons/fi'
 
 const Projects = () => {
+  const { t, i18n } = useTranslation()
+  const [projects, setProjects] = useState<Project[]>([])
+  const [loading, setLoading] = useState(true)
+  const [filter, setFilter] = useState<string>('all')
 
-    return (
-        <div className="h-10vh lg:flex justify-between z-50 text-white lg:py-5 lg:px-20 px-5 py-10 gap-10 flex-1 lg:gap-16 lg:mb-40">
-            <div className="h-full flex flex-col lg:justify-center items-start text-black dark:text-white">
-                <h1 data-aos="fade-right" className="text-7xl font-semibold leading-11 mb-7">Projetos<span className="text-primary">.</span></h1>
-                <div data-aos="fade-up" className="flex w-max gap-4">
-                    <a href="https://drive.google.com/file/d/1GntuVA9HQ8iMhnShdEJvHXXvKHs0SwYd/view?usp=sharing" className="bg-secondary hover:bg-primary text-black dark:text-white font-bold py-2 px-4 rounded inline-flex items-center">
-                        <svg className="fill-current w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M13 8V2H7v6H2l8 8 8-8h-5zM0 18h20v2H0v-2z"/></svg>
-                        <span><a href="https://drive.google.com/file/d/1GntuVA9HQ8iMhnShdEJvHXXvKHs0SwYd/view?usp=sharing"></a>Download CV</span>
+  useEffect(() => {
+    api.getProjects()
+      .then(setProjects)
+      .catch(() => setProjects([]))
+      .finally(() => setLoading(false))
+  }, [])
+
+  const getDescription = (p: Project) =>
+    i18n.language === 'pt' ? p.description_pt : p.description_en
+
+  const filtered = filter === 'all'
+    ? projects
+    : projects.filter((p) => p.type === filter)
+
+  const filters = ['all', 'professional', 'freelance'] as const
+
+  return (
+    <div className="section-container">
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5 }}
+      >
+        <h2 className="section-title">
+          {t('projects.title')}<span className="accent-dot">.</span>
+        </h2>
+      </motion.div>
+
+      {/* Filter tabs */}
+      <div className="flex gap-4 mb-10">
+        {filters.map((f) => (
+          <button
+            key={f}
+            onClick={() => setFilter(f)}
+            className={`text-sm font-medium px-4 py-2 rounded-lg transition-colors ${
+              filter === f
+                ? 'bg-accent text-bg'
+                : 'text-body light:text-body-light hover:text-accent border border-muted/20'
+            }`}
+          >
+            {t(`projects.${f}`)}
+          </button>
+        ))}
+      </div>
+
+      {loading ? (
+        <div className="text-body">Loading...</div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filtered.map((project, i) => (
+            <motion.div
+              key={project.id}
+              className={`card flex flex-col ${project.featured ? 'md:col-span-2 lg:col-span-1' : ''}`}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4, delay: i * 0.08 }}
+            >
+              <div className="flex items-start justify-between mb-4">
+                <div>
+                  <h3 className="font-heading font-semibold text-xl text-heading light:text-heading-light">
+                    {project.title}
+                  </h3>
+                  {project.featured && (
+                    <span className="text-xs text-accent font-medium">{t('projects.featured')}</span>
+                  )}
+                </div>
+                <div className="flex gap-3 text-body light:text-body-light">
+                  {project.live_url && (
+                    <a href={project.live_url} target="_blank" rel="noopener noreferrer" className="hover:text-accent transition-colors">
+                      <FiExternalLink size={18} />
                     </a>
-                </div>    
-            </div>
+                  )}
+                  {project.repo_url && (
+                    <a href={project.repo_url} target="_blank" rel="noopener noreferrer" className="hover:text-accent transition-colors">
+                      <FiGithub size={18} />
+                    </a>
+                  )}
+                </div>
+              </div>
 
-            <div className="lg:py-0 py-10">
-                <Carousel data-aos="fade-left" 
-                navigation={({ setActiveIndex, activeIndex, length }) => (
-                    <div className="absolute bottom-4 left-2/4 z-50 flex -translate-x-2/4 gap-2">
-                    {new Array(length).fill("").map((_, i) => (
-                        <span
-                        key={i}
-                        className={`block h-1 cursor-pointer rounded-2xl transition-all content-[''] ${
-                            activeIndex === i ? "w-8 bg-white" : "w-4 bg-white/50"
-                        }`}
-                        onClick={() => setActiveIndex(i)}
-                        />
-                    ))}
-                    </div>
-                )}
-                className="rounded-xl" loop={true} placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
-                    <div className="relative h-full w-full">
-                        <img
-                            src={chasquiImg}
-                            alt="image 1"
-                            className="h-full w-full object-cover"
-                        />
-                        <div className="absolute inset-0 grid h-full w-full place-items-center bg-black/50">
-                            <div className="w-3/4 text-center md:w-2/4">
-                                <Typography
-                                            variant="h1"
-                                            color="white"
-                                            className="mb-4 text-3xl md:text-4xl lg:text-5xl" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}                    >
-                                Chasqui <br /> Express
-                                </Typography>
-                                <Typography
-                                            variant="lead"
-                                            color="white"
-                                            className="mb-12 opacity-80" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} children={undefined}                    ></Typography>
-                                <div className="flex justify-center gap-2">
-                                    <a href="https://chasqui-tracker.vercel.app/">
-                                        <Button size="sm" color="white" variant="gradient" className="flex items-center gap-2" placeholder={undefined} ripple={true} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
-                                            Visite
-                                            <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            strokeWidth={2}
-                                            stroke="currentColor"
-                                            className="h-5 w-5"
-                                            >
-                                            <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3"
-                                            />
-                                            </svg>
-                                        </Button>
-                                    </a>
-                                </div>  
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div className="relative h-full w-full">
-                        <img
-                            src={bookImg}
-                            alt="image 1"
-                            className="h-full w-full object-cover"
-                        />
-                        <div className="absolute inset-0 grid h-full w-full place-items-center bg-black/50">
-                            <div className="w-3/4 text-center md:w-2/4">
-                                <Typography
-                                            variant="h1"
-                                            color="white"
-                                            className="mb-4 text-3xl md:text-4xl lg:text-5xl" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}                    >
-                                Book <br /> Review
-                                </Typography>
-                                <Typography
-                                            variant="lead"
-                                            color="white"
-                                            className="mb-12 opacity-80" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} children={undefined}                    ></Typography>
-                                <div className="flex justify-center gap-2">
-                                    <a href="http://143.198.228.70:50">
-                                        <Button size="sm" color="white" variant="gradient" className="flex items-center gap-2" placeholder={undefined} ripple={true} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
-                                            Visite
-                                            <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            strokeWidth={2}
-                                            stroke="currentColor"
-                                            className="h-5 w-5"
-                                            >
-                                            <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3"
-                                            />
-                                            </svg>
-                                        </Button>
-                                    </a>
-                                    <a href="https://github.com/edurs2602/Review-Book-Blog">
-                                        <Button size="sm" color="white" variant="outlined" className="flex items-center gap-2" placeholder={undefined} ripple={true} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
-                                            Repositorio
-                                        </Button>
-                                    </a>
-                                </div>  
-                            </div>
-                        </div>
-                    </div>
+              <p className="text-body light:text-body-light text-sm leading-relaxed mb-4 flex-1">
+                {getDescription(project)}
+              </p>
 
-                    <div className="relative h-full w-full">
-                        <img
-                            src={todoListImg}
-                            alt="image 1"
-                            className="h-full w-full object-cover"
-                        />
-                        <div className="absolute inset-0 grid h-full w-full place-items-center bg-black/50">
-                            <div className="w-3/4 text-center md:w-2/4">
-                                <Typography
-                                            variant="h1"
-                                            color="white"
-                                            className="mb-4 text-3xl md:text-4xl lg:text-5xl" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}                    >
-                                Todo <br /> List
-                                </Typography>
-                                <Typography
-                                            variant="lead"
-                                            color="white"
-                                            className="mb-12 opacity-80" placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} children={undefined}                    ></Typography>
-                                <div className="flex justify-center gap-2">
-                                    <a href="http://143.198.228.70:60">
-                                        <Button size="sm" color="white" variant="gradient" className="flex items-center gap-2" placeholder={undefined} ripple={true} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
-                                            Visite
-                                            <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            strokeWidth={2}
-                                            stroke="currentColor"
-                                            className="h-5 w-5"
-                                            >
-                                            <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3"
-                                            />
-                                            </svg>
-                                        </Button>
-                                    </a>
-                                    <a href="https://github.com/edurs2602/flasktodolist">
-                                        <Button size="sm" color="white" variant="outlined" className="flex items-center gap-2" placeholder={undefined} ripple={true} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
-                                            Repositorio
-                                        </Button>
-                                    </a>
-                                </div>  
-                            </div>
-                        </div>
-                    </div>
-
-                </Carousel>
-            </div>
-            
+              <div className="flex flex-wrap gap-2 mt-auto">
+                {project.tech_stack.map((tech) => (
+                  <span key={tech} className="chip">{tech}</span>
+                ))}
+              </div>
+            </motion.div>
+          ))}
         </div>
-    );
-};
+      )}
+    </div>
+  )
+}
 
-export default Projects;
+export default Projects

@@ -1,0 +1,65 @@
+{
+  "nav": {
+    "home": "Home",
+    "about": "About",
+    "experience": "Experience",
+    "projects": "Projects",
+    "skills": "Skills",
+    "contact": "Contact"
+  },
+  "hero": {
+    "greeting": "Hey, I'm Eduardo",
+    "role": "Full-Stack Developer",
+    "tagline": "I build robust backend systems and modern web applications, with a focus on Python, cloud infrastructure, and DevOps.",
+    "cta_contact": "Get in Touch",
+    "cta_resume": "Download Resume"
+  },
+  "about": {
+    "title": "About",
+    "p1": "I'm a Full-Stack Developer currently at Accenture, where I build web applications with FastAPI and Vue.js while managing DevOps pipelines on Azure. With 4+ years of experience, I specialize in Python ecosystems — Django, DRF, Flask, and FastAPI.",
+    "p2": "Previously, I coordinated a team at TinGo, delivering a ticketing platform from backend to cloud infrastructure. I also built microservices and internal tools at UFRN's IT department, and developed a marketplace platform at Fiscallize.",
+    "p3": "I'm pursuing a Bachelor's in Information Technology at UFRN (graduating Dec 2026). I'm passionate about clean architecture, scalable systems, and bridging the gap between development and operations."
+  },
+  "experience": {
+    "title": "Experience",
+    "present": "Present"
+  },
+  "projects": {
+    "title": "Projects",
+    "all": "All",
+    "professional": "Professional",
+    "freelance": "Freelance",
+    "visit": "Live Site",
+    "repo": "Source Code",
+    "featured": "Featured"
+  },
+  "skills": {
+    "title": "Skills",
+    "backend": "Backend",
+    "frontend": "Frontend",
+    "databases": "Databases",
+    "devops": "DevOps",
+    "cloud": "Cloud",
+    "testing": "Testing"
+  },
+  "contact": {
+    "title": "Get In Touch",
+    "description": "I'm currently open to freelance opportunities and interesting projects. Whether you have a question or just want to say hi, feel free to reach out!",
+    "name": "Your Name",
+    "name_placeholder": "John Doe",
+    "email": "Your Email",
+    "email_placeholder": "john@example.com",
+    "subject": "Subject",
+    "subject_placeholder": "Project inquiry",
+    "message": "Message",
+    "message_placeholder": "Tell me about your project...",
+    "send": "Send Message",
+    "sending": "Sending...",
+    "success": "Message sent successfully! I'll get back to you soon.",
+    "error": "Something went wrong. Please try again or email me directly."
+  },
+  "footer": {
+    "built_with": "Built with React & FastAPI",
+    "rights": "All rights reserved."
+  }
+}

@@ -1,47 +1,66 @@
-import { AiFillGithub, AiFillInstagram, AiFillLinkedin } from "react-icons/ai";
-import img from "../../assets/eufundobw.png"
-import AOS from 'aos' 
-import 'aos/dist/aos.css'
+import { useTranslation } from 'react-i18next'
+import { motion } from 'framer-motion'
+import { AiFillGithub, AiFillLinkedin } from 'react-icons/ai'
+import profileImg from '../../assets/profile.jpg'
 
 const Banner = () => {
-    AOS.init({
-        easing: 'ease-out-quart',
-        delay: 0,
-        duration: 900,
-    })
+  const { t } = useTranslation()
 
-    return (
-        <div data-aos="fade-up" className="h-10vh lg:flex lg:max-xl:flex lg:justify-between z-50 text-white lg:py-5 lg:px-30 px-5 py-10 gap-10 flex-1">
-            <div className="h-full lg:py-40 lg:flex-col lg:justify-center justify-start items-start text-black dark:text-white">
-                <h3 className="text-2xl font-light mb-2">Hey, sou Eduardo👋🏼</h3>
-                <h1 className="text-7xl font-semibold leading-11"><span className="text-primary">Back</span>end</h1>
-                <h1 className="text-7xl font-semibold leading-11 mb-6">Developer</h1>
-                <h3 className="text-2xl font-light">Sou um desenvolvedor backend pronto para ajudar na construção de websites incríveis, feitos para encantar os usuários.</h3>
-                <div className="flex mt-4 gap-2">
-                    <div className="flex items-center justify-center">
-                        <div className="flex space-x-2">
-                            <a href="https://github.com/edurs2602" className="text-accent hover:text-primary rounded-full glow p-2">
-                                <AiFillGithub className="text-4xl"></AiFillGithub>
-                            </a>
-                            <a href="https://www.linkedin.com/in/edurs2602/" className="text-accent hover:text-primary rounded-full glow p-2">
-                                <AiFillLinkedin className="text-4xl"></AiFillLinkedin>
-                            </a>
-                            <a href="https://www.instagram.com/ribeiro.eduardo_/" className="text-accent hover:text-primary rounded-full glow p-2">
-                                <AiFillInstagram className="text-4xl"></AiFillInstagram>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+  return (
+    <div className="section-container flex flex-col-reverse lg:flex-row items-center justify-between gap-12 min-h-[calc(100vh-4rem)]">
+      <motion.div
+        className="flex-1"
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
+        <p className="text-accent font-medium mb-4 text-lg">{t('hero.greeting')} 👋</p>
+        <h1 className="font-heading text-5xl lg:text-7xl font-bold text-heading light:text-heading-light leading-tight mb-6">
+          {t('hero.role')}
+        </h1>
+        <p className="text-body light:text-body-light text-lg lg:text-xl max-w-xl mb-8 leading-relaxed">
+          {t('hero.tagline')}
+        </p>
 
-            <div className="w-90 lg:content-center flex justify-center items-center">
-                <div className="">
-                    <img src={img} className="rounded-full aspect-square border-2 p-10 border-primary w-full h-full object-cover" alt="" />
-                </div>
-            </div>
-
+        <div className="flex flex-wrap gap-4 mb-8">
+          <a href="#Contact" className="btn-primary">{t('hero.cta_contact')}</a>
+          <a
+            href="https://drive.google.com/file/d/1GntuVA9HQ8iMhnShdEJvHXXvKHs0SwYd/view?usp=sharing"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn-outline"
+          >
+            {t('hero.cta_resume')}
+          </a>
         </div>
-    );
-};
 
-export default Banner;
+        <div className="flex gap-4">
+          <a href="https://github.com/edurs2602" target="_blank" rel="noopener noreferrer" className="text-body light:text-body-light hover:text-accent transition-colors text-2xl glow rounded-full p-2">
+            <AiFillGithub />
+          </a>
+          <a href="https://www.linkedin.com/in/edurs2602/" target="_blank" rel="noopener noreferrer" className="text-body light:text-body-light hover:text-accent transition-colors text-2xl glow rounded-full p-2">
+            <AiFillLinkedin />
+          </a>
+        </div>
+      </motion.div>
+
+      <motion.div
+        className="flex-shrink-0"
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.6, delay: 0.2 }}
+      >
+        <div className="relative">
+          <img
+            src={profileImg}
+            alt="Luís Eduardo"
+            className="w-64 h-64 lg:w-80 lg:h-80 rounded-full object-cover border-4 border-accent/30 shadow-lg shadow-accent/10"
+          />
+          <div className="absolute inset-0 rounded-full border-2 border-accent/10 scale-110" />
+        </div>
+      </motion.div>
+    </div>
+  )
+}
+
+export default Banner
