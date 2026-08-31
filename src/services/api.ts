@@ -54,6 +54,28 @@ export interface ContactForm {
   message: string
 }
 
+export interface ResumeStatus {
+  exists: boolean
+  size?: number
+  last_modified?: string
+}
+
+async function uploadFile(path: string, file: File): Promise<{ ok: boolean; lang: string; size: number }> {
+  const formData = new FormData()
+  formData.append('file', file)
+  const token = localStorage.getItem('admin_token')
+  const res = await fetch(`${API_URL}${path}`, {
+    method: 'POST',
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+    body: formData,
+  })
+  if (!res.ok) {
+    const error = await res.json().catch(() => ({ detail: 'Upload failed' }))
+    throw new Error(error.detail || `HTTP ${res.status}`)
+  }
+  return res.json()
+}
+
 // Public API
 export const api = {
   getExperiences: () => request<Experience[]>('/api/experiences'),
@@ -63,6 +85,7 @@ export const api = {
       method: 'POST',
       body: JSON.stringify(data),
     }),
+  getResumeUrl: (lang: string) => `${API_URL}/api/resume/${lang}`,
 }
 
 // Admin API
@@ -102,4 +125,10 @@ export const adminApi = {
     }),
   deleteProject: (id: number) =>
     request<void>(`/api/admin/projects/${id}`, { method: 'DELETE' }),
+
+  // Resume
+  getResumeStatus: () =>
+    request<{ pt: ResumeStatus; en: ResumeStatus }>('/api/admin/resume/status'),
+  uploadResume: (lang: 'pt' | 'en', file: File) =>
+    uploadFile(`/api/admin/resume/${lang}`, file),
 }

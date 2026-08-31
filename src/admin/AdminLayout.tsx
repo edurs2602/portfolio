@@ -3,6 +3,7 @@ import ExperienceList from './ExperienceList'
 import ExperienceForm from './ExperienceForm'
 import ProjectList from './ProjectList'
 import ProjectForm from './ProjectForm'
+import ResumeAdmin from './ResumeAdmin'
 
 const AdminLayout = () => {
   const navigate = useNavigate()
@@ -27,6 +28,7 @@ const AdminLayout = () => {
         <nav className="flex flex-col gap-2 flex-1">
           <NavLink to="/admin/experiences" className={linkClass}>Experiences</NavLink>
           <NavLink to="/admin/projects" className={linkClass}>Projects</NavLink>
+          <NavLink to="/admin/resume" className={linkClass}>Currículo</NavLink>
         </nav>
         <div className="space-y-2">
           <a href="/" className="block text-sm text-muted hover:text-accent transition-colors">
@@ -53,6 +55,7 @@ const AdminLayout = () => {
           <Route path="projects" element={<ProjectList />} />
           <Route path="projects/new" element={<ProjectForm />} />
           <Route path="projects/:id/edit" element={<ProjectForm />} />
+          <Route path="resume" element={<ResumeAdmin />} />
         </Routes>
       </main>
     </div>

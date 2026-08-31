@@ -1,0 +1,4 @@
+aws_region     = "us-east-1"
+key_name       = "my-key-pair"          # Nome do key pair criado na AWS
+allowed_ssh_ip = "1.2.3.4/32"          # Seu IP público: curl ifconfig.me
+domain         = "luiseduardo.dev.br"

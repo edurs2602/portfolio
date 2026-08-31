@@ -2,9 +2,12 @@ import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
 import { AiFillGithub, AiFillLinkedin } from 'react-icons/ai'
 import profileImg from '../../assets/profile.jpg'
+import { api } from '../../services/api'
 
 const Banner = () => {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+  const lang = i18n.language.startsWith('pt') ? 'pt' : 'en'
+  const resumeUrl = api.getResumeUrl(lang)
 
   return (
     <div className="section-container flex flex-col-reverse lg:flex-row items-center justify-between gap-12 min-h-[calc(100vh-4rem)]">
@@ -25,9 +28,8 @@ const Banner = () => {
         <div className="flex flex-wrap gap-4 mb-8">
           <a href="#Contact" className="btn-primary">{t('hero.cta_contact')}</a>
           <a
-            href="https://drive.google.com/file/d/1GntuVA9HQ8iMhnShdEJvHXXvKHs0SwYd/view?usp=sharing"
-            target="_blank"
-            rel="noopener noreferrer"
+            href={resumeUrl}
+            download={`resume_${lang}.pdf`}
             className="btn-outline"
           >
             {t('hero.cta_resume')}

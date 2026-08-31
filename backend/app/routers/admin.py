@@ -1,11 +1,19 @@
 import json
+import os
 import time
 from collections import defaultdict
+from datetime import datetime, timezone
+from pathlib import Path
 
-from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi import APIRouter, Depends, File, HTTPException, Request, UploadFile
+from fastapi.responses import JSONResponse
 from slowapi import Limiter
 from slowapi.util import get_remote_address
 from sqlalchemy.orm import Session
+
+RESUME_DIR = Path("data/resumes")
+ALLOWED_LANGS = {"pt", "en"}
+MAX_RESUME_SIZE = 10 * 1024 * 1024  # 10 MB
 
 from app.auth import create_token, verify_admin
 from app.config import settings
@@ -152,3 +160,37 @@ def delete_project(proj_id: int, db: Session = Depends(get_db), _: str = Depends
     db.delete(proj)
     db.commit()
     return {"ok": True}
+
+
+# ─── Resume ────────────────────────────────────────────────
+
+@router.get("/api/admin/resume/status")
+def get_resume_status(_: str = Depends(verify_admin)):
+    result = {}
+    for lang in ALLOWED_LANGS:
+        path = RESUME_DIR / f"resume_{lang}.pdf"
+        if path.is_file():
+            stat = path.stat()
+            result[lang] = {
+                "exists": True,
+                "size": stat.st_size,
+                "last_modified": datetime.fromtimestamp(stat.st_mtime, tz=timezone.utc).isoformat(),
+            }
+        else:
+            result[lang] = {"exists": False}
+    return result
+
+
+@router.post("/api/admin/resume/{lang}")
+async def upload_resume(lang: str, file: UploadFile = File(...), _: str = Depends(verify_admin)):
+    if lang not in ALLOWED_LANGS:
+        raise HTTPException(status_code=400, detail="Invalid language. Use 'pt' or 'en'.")
+    if file.content_type != "application/pdf":
+        raise HTTPException(status_code=415, detail="Only PDF files are accepted.")
+    content = await file.read()
+    if len(content) > MAX_RESUME_SIZE:
+        raise HTTPException(status_code=413, detail="File too large. Maximum size is 10 MB.")
+    RESUME_DIR.mkdir(parents=True, exist_ok=True)
+    dest = RESUME_DIR / f"resume_{lang}.pdf"
+    dest.write_bytes(content)
+    return {"ok": True, "lang": lang, "size": len(content)}
